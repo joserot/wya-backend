@@ -26,7 +26,7 @@ export class User {
   @MaxLength(50, { message: 'El apellido no puede tener mas de 50 caracteres' })
   lastName: string;
 
-  @Column()
+  @Column({ unique: true })
   @IsEmail()
   email: string;
 

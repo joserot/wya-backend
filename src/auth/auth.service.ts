@@ -76,7 +76,7 @@ export class AuthService {
       password: await generateHash(password),
     };
 
-    await this.usersRepository.create(userParse);
+    await this.usersRepository.save(userParse);
 
     return this.login(userBody);
   }

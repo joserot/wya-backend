@@ -15,7 +15,7 @@ import { AuthModule } from './auth/auth.module';
       password: 'jose',
       database: 'wyadb',
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: true,
     }),
     UserModule,
     AuthModule,
