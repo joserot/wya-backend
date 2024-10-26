@@ -20,7 +20,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: { id: string }) {
-    const user = await this.userModel.findOneBy({ id: Number(payload.id) });
+    const user = await this.userModel.findOne({
+      where: { id: Number(payload.id) },
+    });
     return user;
   }
 }

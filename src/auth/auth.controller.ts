@@ -5,6 +5,7 @@ import {
   Get,
   Request,
   UseGuards,
+  Res,
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -14,19 +15,23 @@ import { AuthService } from './auth.service';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { ChangePasswordAuthDto } from './dto/change-password-auth.dto';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  handleLogin(@Body() loginBody: LoginAuthDto) {
-    return this.authService.login(loginBody);
+  handleLogin(@Body() loginBody: LoginAuthDto, @Res() response: Response) {
+    return this.authService.login(loginBody, response);
   }
 
   @Post('register')
-  handleRegister(@Body() registerBody: RegisterAuthDto) {
-    return this.authService.register(registerBody);
+  handleRegister(
+    @Body() registerBody: RegisterAuthDto,
+    @Res() response: Response,
+  ) {
+    return this.authService.register(registerBody, response);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -41,8 +46,9 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
+  @Get('me')
+  getMe(@Request() req) {
+    delete req.user.password;
     return req.user;
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../user/entities/user.entity';
 import { LoginAuthDto } from './dto/login-auth.dto';
@@ -7,6 +7,8 @@ import { ChangePasswordAuthDto } from './dto/change-password-auth.dto';
 import { Repository } from 'typeorm';
 import { compareHash, generateHash } from './utils/handleBcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Response } from 'express';
+import ms from 'ms';
 
 @Injectable()
 export class AuthService {
@@ -15,8 +17,16 @@ export class AuthService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
 
-  public async login(userLoginBody: LoginAuthDto) {
+  public async login(userLoginBody: LoginAuthDto, @Res() response: Response) {
     const { password, email } = await userLoginBody;
+
+    const expiresInMs = ms(process.env.JWT_EXPIRATION);
+
+    if (!expiresInMs) {
+      throw new Error('Invalid JWT_EXPIRATION format');
+    }
+
+    const expires = new Date(Date.now() + expiresInMs);
 
     const userExist = await this.usersRepository.findOne({
       where: {
@@ -37,26 +47,28 @@ export class AuthService {
         HttpStatus.CONFLICT,
       );
 
-    const userFlat = userExist;
-    delete userFlat.password;
+    const userData = userExist;
+    delete userData.password;
 
     const payload = {
-      id: userFlat.id,
-      name: userFlat.name,
-      lastName: userFlat.lastName,
+      id: userData.id,
+      name: userData.name,
+      email: userData.email,
+      lastName: userData.lastName,
     };
 
     const token = this.jwtService.sign(payload);
 
-    const data = {
-      token,
-      user: userFlat,
-    };
+    response.cookie('Authentication', token, {
+      httpOnly: true,
+      secure: true,
+      expires,
+    });
 
-    return data;
+    response.send(userData);
   }
 
-  public async register(userBody: RegisterAuthDto) {
+  public async register(userBody: RegisterAuthDto, @Res() response: Response) {
     const { password, email, name, lastName } = userBody;
 
     const userExist = await this.usersRepository.findOne({
@@ -78,7 +90,7 @@ export class AuthService {
 
     await this.usersRepository.save(userParse);
 
-    return this.login(userBody);
+    return this.login(userBody, response);
   }
 
   public async changePassword(
