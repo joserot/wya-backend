@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { IsNumber, MaxLength, MinLength, IsString } from 'class-validator';
 import { Category } from 'src/category/entities/category.entity';
 
@@ -38,6 +44,10 @@ export class Property {
   @Column('text', { array: true, nullable: true })
   images: string[] | null;
 
-  @OneToOne(() => Category, (category) => category.id)
+  @ManyToOne(() => Category, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn()
   category: Category;
 }

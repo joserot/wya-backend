@@ -76,7 +76,7 @@ export class CategoryService {
       );
     }
 
-    this.categoryRepository.delete(category);
+    await this.categoryRepository.remove(category);
 
     return category;
   }

@@ -42,17 +42,21 @@ export class PropertyService {
     }
     property.category = category;
 
-    return this.propertyRepository.save(property);
+    await this.propertyRepository.save(property);
+
+    return property;
   }
 
   async findAll() {
-    const properties = await this.propertyRepository.find();
-
+    const properties = await this.propertyRepository.find({
+      relations: ['category'],
+    });
     return properties;
   }
 
   async findOne(id: number) {
     const property = await this.propertyRepository.findOne({
+      relations: ['category'],
       where: {
         id,
       },
