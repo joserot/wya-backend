@@ -1,26 +1,83 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Category } from './entities/category.entity';
 
 @Injectable()
 export class CategoryService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  constructor(
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
+  ) {}
+
+  async create(createCategoryDto: CreateCategoryDto) {
+    const category = new Category();
+    category.name = createCategoryDto.name;
+    category.slug = createCategoryDto.slug;
+    category.description = createCategoryDto.description;
+
+    this.categoryRepository.save(category);
+
+    return category;
   }
 
-  findAll() {
-    return `This action returns all category`;
+  async findAll() {
+    const categories = await this.categoryRepository.find();
+    return categories;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(id: number) {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+    });
+
+    if (!category) {
+      throw new HttpException(
+        'No se encontro la categoría',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return category;
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+    });
+
+    if (!category) {
+      throw new HttpException(
+        'No se encontro la categoría',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    category.name = updateCategoryDto.name;
+    category.slug = updateCategoryDto.slug;
+    category.description = updateCategoryDto.description;
+
+    this.categoryRepository.save(category);
+
+    return category;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: number) {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+    });
+
+    if (!category) {
+      throw new HttpException(
+        'No se encontro la categoría',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    this.categoryRepository.delete(category);
+
+    return category;
   }
 }
