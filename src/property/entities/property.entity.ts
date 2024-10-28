@@ -1,11 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import {
-  IsNumber,
-  MaxLength,
-  MinLength,
-  IsString,
-  IsArray,
-} from 'class-validator';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import { IsNumber, MaxLength, MinLength, IsString } from 'class-validator';
+import { Category } from 'src/category/entities/category.entity';
 
 @Entity()
 export class Property {
@@ -40,7 +35,9 @@ export class Property {
   @IsString()
   coverImage: string | null;
 
-  @Column({ nullable: true })
-  @IsArray()
+  @Column('text', { array: true, nullable: true })
   images: string[] | null;
+
+  @OneToOne(() => Category, (category) => category.id)
+  category: Category;
 }

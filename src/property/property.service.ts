@@ -1,26 +1,114 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Property } from './entities/property.entity';
+import { Category } from 'src/category/entities/category.entity';
 
 @Injectable()
 export class PropertyService {
-  create(createPropertyDto: CreatePropertyDto) {
-    return 'This action adds a new property';
+  constructor(
+    @InjectRepository(Property)
+    private readonly propertyRepository: Repository<Property>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
+  ) {}
+
+  async create(createPropertyDto: CreatePropertyDto) {
+    const property = new Property();
+    property.name = createPropertyDto.name;
+    property.slug = createPropertyDto.slug;
+    property.description = createPropertyDto.description;
+    property.price = createPropertyDto.price;
+    property.coverImage = createPropertyDto.coverImage;
+    property.images = createPropertyDto.images;
+
+    const category = await this.categoryRepository.findOne({
+      where: {
+        id: createPropertyDto.categoryId,
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException(
+        `Category with ID ${createPropertyDto.categoryId} not found`,
+      );
+    }
+    property.category = category;
+
+    return this.propertyRepository.save(property);
   }
 
-  findAll() {
-    return `This action returns all property`;
+  async findAll() {
+    const properties = await this.propertyRepository.find();
+
+    return properties;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} property`;
+  async findOne(id: number) {
+    const property = await this.propertyRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    return property;
   }
 
-  update(id: number, updatePropertyDto: UpdatePropertyDto) {
-    return `This action updates a #${id} property`;
+  async update(id: number, updatePropertyDto: UpdatePropertyDto) {
+    const property = await this.propertyRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!property) {
+      throw new NotFoundException(`Property with ID ${id} not found`);
+    }
+
+    property.name = updatePropertyDto.name;
+    property.slug = updatePropertyDto.slug;
+    property.description = updatePropertyDto.description;
+    property.price = updatePropertyDto.price;
+    property.coverImage = updatePropertyDto.coverImage;
+    property.images = updatePropertyDto.images;
+
+    const category = await this.categoryRepository.findOne({
+      where: {
+        id: updatePropertyDto.categoryId,
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException(
+        `Category with ID ${updatePropertyDto.categoryId} not found`,
+      );
+    }
+    property.category = category;
+
+    return this.propertyRepository.save(property);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} property`;
+  async remove(id: number) {
+    const property = await this.propertyRepository.findOne({
+      where: { id },
+    });
+
+    if (!property) {
+      throw new HttpException(
+        'No se encontro la propiedad',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    await this.propertyRepository.remove(property);
+
+    return property;
   }
 }
