@@ -1,17 +1,6 @@
-import {
-  IsNumber,
-  MaxLength,
-  MinLength,
-  IsString,
-  IsOptional,
-  IsArray,
-} from 'class-validator';
+import { MaxLength, MinLength, IsString, IsOptional } from 'class-validator';
 
 export class CreatePropertyDto {
-  @IsOptional()
-  @IsNumber()
-  id?: number;
-
   @IsString()
   @MinLength(3, { message: 'El nombre debe tener al menos 3 caracteres' })
   @MaxLength(50, { message: 'El nombre no puede tener más de 50 caracteres' })
@@ -30,18 +19,9 @@ export class CreatePropertyDto {
   description?: string;
 
   @IsOptional()
-  @IsNumber()
-  price?: number;
-
-  @IsOptional()
   @IsString()
-  coverImage?: string;
+  price?: string;
 
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  images?: string[];
-
-  @IsNumber()
-  categoryId: number;
+  @IsString()
+  categoryId: string;
 }

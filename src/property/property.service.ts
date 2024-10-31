@@ -20,18 +20,22 @@ export class PropertyService {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  async create(createPropertyDto: CreatePropertyDto) {
+  async create(
+    createPropertyDto: CreatePropertyDto,
+    coverImage: string | null,
+    images: string[],
+  ) {
     const property = new Property();
     property.name = createPropertyDto.name;
     property.slug = createPropertyDto.slug;
     property.description = createPropertyDto.description;
-    property.price = createPropertyDto.price;
-    property.coverImage = createPropertyDto.coverImage;
-    property.images = createPropertyDto.images;
+    property.price = Number(createPropertyDto.price);
+    property.coverImage = coverImage ? coverImage : null;
+    property.images = images;
 
     const category = await this.categoryRepository.findOne({
       where: {
-        id: createPropertyDto.categoryId,
+        id: Number(createPropertyDto.categoryId),
       },
     });
 
@@ -65,7 +69,12 @@ export class PropertyService {
     return property;
   }
 
-  async update(id: number, updatePropertyDto: UpdatePropertyDto) {
+  async update(
+    id: number,
+    updatePropertyDto: UpdatePropertyDto,
+    coverImage: string | null,
+    images: string[],
+  ) {
     const property = await this.propertyRepository.findOne({
       where: {
         id,
@@ -79,13 +88,13 @@ export class PropertyService {
     property.name = updatePropertyDto.name;
     property.slug = updatePropertyDto.slug;
     property.description = updatePropertyDto.description;
-    property.price = updatePropertyDto.price;
-    property.coverImage = updatePropertyDto.coverImage;
-    property.images = updatePropertyDto.images;
+    property.price = Number(updatePropertyDto.price);
+    property.coverImage = coverImage ? coverImage : null;
+    property.images = images;
 
     const category = await this.categoryRepository.findOne({
       where: {
-        id: updatePropertyDto.categoryId,
+        id: Number(updatePropertyDto.categoryId),
       },
     });
 

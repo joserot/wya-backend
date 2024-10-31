@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { PropertyModule } from './property/property.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PropertyModule } from './property/property.module';
     AuthModule,
     CategoryModule,
     PropertyModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
