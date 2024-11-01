@@ -43,6 +43,21 @@ export class CategoryService {
     return category;
   }
 
+  async findOneBySlug(slug: string) {
+    const category = await this.categoryRepository.findOne({
+      where: { slug },
+    });
+
+    if (!category) {
+      throw new HttpException(
+        'No se encontro la categoría',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return category;
+  }
+
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.categoryRepository.findOne({
       where: { id },

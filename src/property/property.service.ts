@@ -66,6 +66,25 @@ export class PropertyService {
       },
     });
 
+    if (!property) {
+      throw new NotFoundException(`Property with ID ${id} not found`);
+    }
+
+    return property;
+  }
+
+  async findOneBySlug(slug: string) {
+    const property = await this.propertyRepository.findOne({
+      relations: ['category'],
+      where: {
+        slug,
+      },
+    });
+
+    if (!property) {
+      throw new NotFoundException(`Property with slug ${slug} not found`);
+    }
+
     return property;
   }
 

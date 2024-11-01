@@ -33,6 +33,11 @@ export class CategoryController {
     return this.categoryService.findOne(+id);
   }
 
+  @Get('slug/:slug')
+  findOneBySlug(@Param('slug') slug: string) {
+    return this.categoryService.findOneBySlug(slug);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(

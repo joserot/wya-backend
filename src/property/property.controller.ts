@@ -81,6 +81,11 @@ export class PropertyController {
     return this.propertyService.findOne(+id);
   }
 
+  @Get('slug/:slug')
+  findOneBySlug(@Param('slug') slug: string) {
+    return this.propertyService.findOneBySlug(slug);
+  }
+
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileFieldsInterceptor([
