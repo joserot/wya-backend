@@ -32,6 +32,35 @@ export class PropertyService {
     property.price = Number(createPropertyDto.price);
     property.coverImage = coverImage ? coverImage : null;
     property.images = images;
+    property.latitudeAndLongitude = createPropertyDto.latitudeAndLongitude
+      ? createPropertyDto.latitudeAndLongitude
+      : null;
+    property.location = createPropertyDto.location
+      ? createPropertyDto.location
+      : null;
+    property.totalArea = createPropertyDto.totalArea
+      ? Number(createPropertyDto.totalArea)
+      : null;
+    property.coveredArea = createPropertyDto.coveredArea
+      ? Number(createPropertyDto.coveredArea)
+      : null;
+    property.rooms = createPropertyDto.rooms
+      ? Number(createPropertyDto.rooms)
+      : null;
+    property.bathrooms = createPropertyDto.bathrooms
+      ? Number(createPropertyDto.bathrooms)
+      : null;
+    property.garages = createPropertyDto.garages
+      ? Number(createPropertyDto.garages)
+      : null;
+    property.bedrooms = createPropertyDto.bedrooms
+      ? Number(createPropertyDto.bedrooms)
+      : null;
+    property.parking = createPropertyDto.parking
+      ? createPropertyDto.parking === '1'
+        ? true
+        : false
+      : null;
 
     const category = await this.categoryRepository.findOne({
       where: {
@@ -110,6 +139,35 @@ export class PropertyService {
     property.price = Number(updatePropertyDto.price);
     property.coverImage = coverImage ? coverImage : null;
     property.images = images;
+    property.latitudeAndLongitude = updatePropertyDto.latitudeAndLongitude
+      ? updatePropertyDto.latitudeAndLongitude
+      : null;
+    property.location = updatePropertyDto.location
+      ? updatePropertyDto.location
+      : null;
+    property.totalArea = updatePropertyDto.totalArea
+      ? Number(updatePropertyDto.totalArea)
+      : null;
+    property.coveredArea = updatePropertyDto.coveredArea
+      ? Number(updatePropertyDto.coveredArea)
+      : null;
+    property.rooms = updatePropertyDto.rooms
+      ? Number(updatePropertyDto.rooms)
+      : null;
+    property.bathrooms = updatePropertyDto.bathrooms
+      ? Number(updatePropertyDto.bathrooms)
+      : null;
+    property.garages = updatePropertyDto.garages
+      ? Number(updatePropertyDto.garages)
+      : null;
+    property.bedrooms = updatePropertyDto.bedrooms
+      ? Number(updatePropertyDto.bedrooms)
+      : null;
+    property.parking = updatePropertyDto.parking
+      ? updatePropertyDto.parking === '1'
+        ? true
+        : false
+      : null;
 
     const category = await this.categoryRepository.findOne({
       where: {

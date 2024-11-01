@@ -5,7 +5,14 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { IsNumber, MaxLength, MinLength, IsString } from 'class-validator';
+import {
+  IsNumber,
+  MaxLength,
+  MinLength,
+  IsString,
+  IsOptional,
+  IsBoolean,
+} from 'class-validator';
 import { Category } from 'src/category/entities/category.entity';
 
 @Entity()
@@ -50,4 +57,49 @@ export class Property {
   })
   @JoinColumn()
   category: Category;
+
+  @Column({ nullable: true })
+  @IsString()
+  @IsOptional()
+  latitudeAndLongitude: string | null;
+
+  @Column({ nullable: true })
+  @IsString()
+  @IsOptional()
+  location: string | null;
+
+  @Column({ nullable: true })
+  @IsNumber()
+  @IsOptional()
+  totalArea: number | null;
+
+  @Column({ nullable: true })
+  @IsNumber()
+  @IsOptional()
+  coveredArea: number | null;
+
+  @Column({ nullable: true })
+  @IsNumber()
+  @IsOptional()
+  rooms: number | null;
+
+  @Column({ nullable: true })
+  @IsNumber()
+  @IsOptional()
+  bathrooms: number | null;
+
+  @Column({ nullable: true })
+  @IsNumber()
+  @IsOptional()
+  garages: number | null;
+
+  @Column({ nullable: true })
+  @IsNumber()
+  @IsOptional()
+  bedrooms: number | null;
+
+  @Column({ nullable: true })
+  @IsBoolean()
+  @IsOptional()
+  parking: boolean | null;
 }

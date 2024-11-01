@@ -24,4 +24,40 @@ export class CreatePropertyDto {
 
   @IsString()
   categoryId: string;
+
+  @IsOptional()
+  @IsString()
+  latitudeAndLongitude?: string;
+
+  @IsOptional()
+  @IsString()
+  location?: string;
+
+  @IsOptional()
+  @IsString()
+  totalArea?: string;
+
+  @IsOptional()
+  @IsString()
+  coveredArea?: string;
+
+  @IsOptional()
+  @IsString()
+  rooms?: string;
+
+  @IsOptional()
+  @IsString()
+  bathrooms?: string;
+
+  @IsOptional()
+  @IsString()
+  garages?: string;
+
+  @IsOptional()
+  @IsString()
+  bedrooms?: string;
+
+  @IsOptional()
+  @IsString()
+  parking?: string;
 }

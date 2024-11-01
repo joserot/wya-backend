@@ -34,7 +34,7 @@ export class PropertyController {
       },
       {
         name: 'images',
-        maxCount: 10,
+        maxCount: 20,
       },
     ]),
   )
@@ -95,7 +95,7 @@ export class PropertyController {
       },
       {
         name: 'images',
-        maxCount: 10,
+        maxCount: 20,
       },
     ]),
   )
