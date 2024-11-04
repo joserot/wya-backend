@@ -110,6 +110,7 @@ export class PropertyService {
       order: {
         ...(sortBy === 'minPrice' && { price: 'ASC' }),
         ...(sortBy === 'maxPrice' && { price: 'DESC' }),
+        ...(!sortBy && { contacts: 'ASC' }),
       },
       take,
       skip,
