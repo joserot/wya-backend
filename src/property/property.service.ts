@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
+import { ContactDto } from './dto/contact.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Property } from './entities/property.entity';
@@ -56,11 +57,6 @@ export class PropertyService {
     property.bedrooms = createPropertyDto.bedrooms
       ? Number(createPropertyDto.bedrooms)
       : null;
-    property.parking = createPropertyDto.parking
-      ? createPropertyDto.parking === '1'
-        ? true
-        : false
-      : null;
 
     const category = await this.categoryRepository.findOne({
       where: {
@@ -80,11 +76,53 @@ export class PropertyService {
     return property;
   }
 
-  async findAll() {
-    const properties = await this.propertyRepository.find({
-      relations: ['category'],
+  async contact(contactDto: ContactDto) {
+    const property = await this.propertyRepository.findOne({
+      where: {
+        id: contactDto.propertyId,
+      },
     });
-    return properties;
+
+    if (!property) {
+      throw new NotFoundException(
+        `Property with ID ${contactDto.propertyId} not found`,
+      );
+    }
+
+    property.contacts = property.contacts ? property.contacts + 1 : 1;
+
+    return this.propertyRepository.save(property);
+  }
+
+  async findAll(
+    page?: number,
+    categorySlug?: string,
+    sortBy?: 'minPrice' | 'maxPrice',
+  ) {
+    const take = 10; // Número de propiedades por página
+    const skip = (page - 1) * take;
+
+    const [properties, total] = await this.propertyRepository.findAndCount({
+      relations: ['category'],
+      where: {
+        ...(categorySlug && { category: { slug: categorySlug } }),
+      },
+      order: {
+        ...(sortBy === 'minPrice' && { price: 'ASC' }),
+        ...(sortBy === 'maxPrice' && { price: 'DESC' }),
+      },
+      take,
+      skip,
+    });
+
+    const totalPages = Math.ceil(total / take);
+
+    return {
+      properties,
+      currentPage: page,
+      totalPages,
+      totalItems: total,
+    };
   }
 
   async findOne(id: number) {
@@ -162,11 +200,6 @@ export class PropertyService {
       : null;
     property.bedrooms = updatePropertyDto.bedrooms
       ? Number(updatePropertyDto.bedrooms)
-      : null;
-    property.parking = updatePropertyDto.parking
-      ? updatePropertyDto.parking === '1'
-        ? true
-        : false
       : null;
 
     const category = await this.categoryRepository.findOne({

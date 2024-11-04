@@ -11,7 +11,6 @@ import {
   MinLength,
   IsString,
   IsOptional,
-  IsBoolean,
 } from 'class-validator';
 import { Category } from 'src/category/entities/category.entity';
 
@@ -98,8 +97,13 @@ export class Property {
   @IsOptional()
   bedrooms: number | null;
 
+  @Column({ nullable: true, default: 0 })
+  @IsNumber()
+  contacts: number | null;
+
   @Column({ nullable: true })
-  @IsBoolean()
-  @IsOptional()
-  parking: boolean | null;
+  createdAt: Date;
+
+  @Column({ nullable: true })
+  updatedAt: Date;
 }

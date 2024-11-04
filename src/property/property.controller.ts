@@ -9,11 +9,13 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFiles,
+  Query,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { PropertyService } from './property.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
+import { ContactDto } from './dto/contact.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { validateImage } from 'src/utils/image-validation';
@@ -71,9 +73,23 @@ export class PropertyController {
     return this.propertyService.create(createPropertyDto, image, imagesArray);
   }
 
+  @Post('contact')
+  async contact(@Body() contactDto: ContactDto) {
+    return this.propertyService.contact(contactDto);
+  }
+
   @Get()
-  findAll() {
-    return this.propertyService.findAll();
+  findAll(
+    @Query('page') page?: string,
+    @Query('categorySlug') categorySlug?: string,
+    @Query('sortBy') sortBy?: 'minPrice' | 'maxPrice',
+  ) {
+    let pageNumber = 1;
+    if (page) {
+      pageNumber = +page;
+    }
+
+    return this.propertyService.findAll(pageNumber, categorySlug, sortBy);
   }
 
   @Get(':id')

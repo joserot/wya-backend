@@ -56,8 +56,4 @@ export class CreatePropertyDto {
   @IsOptional()
   @IsString()
   bedrooms?: string;
-
-  @IsOptional()
-  @IsString()
-  parking?: string;
 }
