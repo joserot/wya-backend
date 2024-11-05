@@ -14,6 +14,18 @@ export class CategoryService {
 
   async create(createCategoryDto: CreateCategoryDto) {
     const category = new Category();
+
+    const existSlug = await this.categoryRepository.findOne({
+      where: { slug: createCategoryDto.slug },
+    });
+
+    if (existSlug) {
+      throw new HttpException(
+        'Ya existe una categoría con ese slug',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     category.name = createCategoryDto.name;
     category.slug = createCategoryDto.slug;
     category.description = createCategoryDto.description;
