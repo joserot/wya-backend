@@ -79,7 +79,7 @@ export class PropertyService {
   async contact(contactDto: ContactDto) {
     const property = await this.propertyRepository.findOne({
       where: {
-        id: contactDto.propertyId,
+        id: Number(contactDto.propertyId),
       },
     });
 

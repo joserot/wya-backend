@@ -1,6 +1,6 @@
-import { IsNumber } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class ContactDto {
-  @IsNumber()
-  propertyId: number;
+  @IsString()
+  propertyId: string;
 }
